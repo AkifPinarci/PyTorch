@@ -193,3 +193,4 @@ import matplotlib as mpl
 # # print(f"Changed Permuted: {x_permuted}")
 
 # Indexing(Selecting data from tensors)
+
