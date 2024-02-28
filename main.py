@@ -137,7 +137,59 @@ import matplotlib as mpl
 # print(x.sum())
 
 # Finding the positional min and max
-x = torch.arange(0, 100, 10)
+# x = torch.arange(0, 100, 10)
 # Find the position in tensor that hhas the minimum value with the argmin() -> returns index position of target tensor where the min value occurs
-print(x.argmin())
-print(x.argmax())
+# print(x.argmin())
+# print(x.argmax())
+
+# Reshaping, stacking, squezing and unsqueezing tensors
+# x = torch.rand(1, 10)
+# Reshape - an input tensor to defined shape (reshape has to be compatible with the original shape)
+# print(x)
+# print(x.shape)
+# print(x_reshaped)
+
+
+# View - Return a view of an input tensor of certain shape but keep the same memory as the original tensor
+# z = x.view(1, 9)
+# print(z)
+# print(z.shape)
+# # Changing z changes x (because view of a tensor shares the same memory as the original input) 
+# z[:, 0] = 5
+# print(x)
+# print(z)
+
+# Stacking - combine multiple tensors on top of each other (vstack) or side by side(hstack)
+# x_stacked = torch.stack([x, x, x, x])
+# print(x_stacked)
+
+# Squeeze - removes all '1' dimension from a tensor
+# Unsequeeze - add a  '1' dimension to a target tensor
+# x = torch.zeros(2, 1, 2, 1, 2)
+# print(x.shape)
+# y_squeezed = torch.squeeze(x)
+# print(y_squeezed.shape)
+# print(y_squeezed)
+# y_unsqueezed = y_squeezed.unsqueeze(dim = 1)
+# print(y_unsqueezed.shape)
+# print(y_unsqueezed)
+
+
+# Permute - Return a view of the input with dimension permuted (swapped) in a certain way 
+# x = torch.randn(2, 3, 5)
+# print(x.size())
+# y = torch.permute(x, (2, 0, 1))
+# print(y.size())
+# print(y)
+
+# x_original = torch.rand(size=(224, 224, 3)) # Height, width, color_channels
+# x_permuted = x_original.permute((2, 0, 1))
+# # print(f"Original: {x_original}")
+# # print(f"Permuted: {x_permuted}")
+# x_original[0, 0, 1] = 1
+# print(x_original[0, 0, 1])
+# print(x_permuted[0, 0, 1])
+# # print(f"Changed Original: {x_original}")
+# # print(f"Changed Permuted: {x_permuted}")
+
+# Indexing(Selecting data from tensors)
