@@ -194,3 +194,15 @@ import matplotlib as mpl
 
 # Indexing(Selecting data from tensors)
 
+x = torch.arange(1, 10).reshape(1, 3, 3)
+print(x)
+
+# print(x[0][2][1])
+# print(x[0, 2, 1])
+
+# Get all values of 0th and 1st dimensions but only index 1 of 2nd dimension
+print(x[:, :, 1])
+# Get all values of the 0 dim but only the 1 index value of 1st and 2nd dim
+# print(x[:, 1, 1])
+
+print(x[:, -1, 2])
