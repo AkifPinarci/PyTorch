@@ -63,8 +63,7 @@ def plot_prediction(train_data = X_train, train_labels = y_train, test_data = X_
 
     # Show the legend
     plt.legend(prop = {"size": 14})
-    # plt.show()
-plot_prediction()
+    plt.show()
 
 # Building model
 # Create linear regression model class
@@ -94,4 +93,14 @@ model_0 = LinearRegressionModel()
 # print(list(model_0.parameters()))
 
 # List the named parameters
-print(model_0.state_dict())
+# print(model_0.state_dict())
+
+# Making predictions using 'torch.inference_mode()'
+# When we pass data through our model, it's going to run it through the forward() method.
+
+# Make predictions with model
+with torch.inference_mode():
+    y_preds = model_0(X_test)
+
+print(y_preds)
+plot_prediction(predictions = y_preds)
