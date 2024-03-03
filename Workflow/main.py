@@ -102,5 +102,58 @@ model_0 = LinearRegressionModel()
 with torch.inference_mode():
     y_preds = model_0(X_test)
 
-print(y_preds)
-plot_prediction(predictions = y_preds)
+# print(y_preds)
+
+# The whole idea of training is for a model to move from some unknown parameters to some known parameters.
+# Loss function may also be called cost function
+# Loss function: How wrong is our model's predictions are to the idela outputs, (lower is better)
+# Optimizer: Takes into account the loss of a model and adjusts the model's parameters(eg. weights & bias in our case) to improve the loss function
+
+# Setup a loss function
+loss_fn = nn.L1Loss()
+
+# Setup a optimizer
+optimizer = torch.optim.SGD(params = model_0.parameters(), lr = 0.01, momentum = 0.9)
+
+# Build a training loop (and a testing loop) in PyTorch
+# Couple of things we need in a training loop
+# 0. Loop through the data 
+# 1. Forward pass - also called forward propogation
+# 2. Calculate the loss 
+# 3. Optimizer zero grad
+# 4. Loss backwards
+# 5. Optimizer step
+
+# An epoch is one loop through the data - (this is a hyperparameter because we've set it)
+torch.manual_seed(42)
+epochs = 500
+
+# Training
+# 0. Loop through the data
+for epoch in range(epochs):
+    # Set the model to training mode
+    model_0.train() # train mode in PyTorch sets all parameters that require gradients to require gradients
+    
+    # 1. Forward pass
+    y_preds = model_0(X_train)
+
+    # 2. Calculate the loss
+    loss = loss_fn(y_preds, y_train)
+    if epoch % 50 == 0:
+        print(f"Loss: {loss}")
+    # 3. Optimizer zero grad
+    optimizer.zero_grad()
+
+    # 4. Perform backpropogation on the loss with respest to the parameters of the model
+    loss.backward()
+
+    # 5. Step the optimizer
+    optimizer.step()
+
+    # Testing
+    model_0.eval()  # turns off gradient tracking
+
+with torch.inference_mode():
+    y_preds_new = model_0(X_test)
+print(model_0.state_dict())
+plot_prediction(predictions=y_preds_new)
