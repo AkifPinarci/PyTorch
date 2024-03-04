@@ -157,3 +157,4 @@ with torch.inference_mode():
     y_preds_new = model_0(X_test)
 print(model_0.state_dict())
 plot_prediction(predictions=y_preds_new)
+
