@@ -98,13 +98,13 @@ if __name__ == '__main__':
     model_1.to(device)
     print(model_1)
     loss_fn = nn.L1Loss()
-    optimizer = torch.optim.SGD(params = model_1.parameters(), lr = 0.01)
-    train_model(loss_fn, optimizer, model_1, X_train, y_train, X_test, y_test, 200)
+    optimizer = torch.optim.SGD(params = model_1.parameters(), lr = 0.1)
+    train_model(loss_fn, optimizer, model_1, X_train, y_train, X_test, y_test, 20)
 
     model_1.eval()
     with torch.inference_mode():
         y_preds = model_1(X_test)
     plot_prediction(X_train.cpu(), y_train.cpu(), X_test.cpu(), y_test.cpu(), y_preds.cpu())
-
+    print(model_1.state_dict())
 
     model_saver(model_1)
