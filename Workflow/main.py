@@ -1,7 +1,13 @@
 import torch
 from torch import nn #nn  contains all of the PyTorch's building blocks for neural network
 import matplotlib.pyplot as plt
+import numpy as np
+from pathlib import Path
+MODEL_PATH = Path("Model")
+MODEL_PATH.mkdir(parents = True, exist_ok = True)
 
+MODEL_NAME = "O1_pt_model.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 # Check PyTorch version
 # print(torch.__version__)
 
@@ -78,6 +84,8 @@ class LinearRegressionModel(nn.Module):
     def __init__(self):
         super().__init__()
 
+        
+
         self.weights = nn.Parameter(torch.randn(1, requires_grad = True, dtype = torch.float))
         self.bias = nn.Parameter(torch.randn(1, requires_grad = True, dtype = float))
 
@@ -121,7 +129,7 @@ class LinearRegressionModel(nn.Module):
 # 5. Optimizer step
 
 # An epoch is one loop through the data - (this is a hyperparameter because we've set it)
-def train(epochs, loss_fn, optimizerm, model_0):
+def train(epochs, loss_fn, optimizer, model_0):
 
     epoch_count = []
     loss_values = []
@@ -165,18 +173,24 @@ def train(epochs, loss_fn, optimizerm, model_0):
                 test_loss_values.append(test_loss)
                 print(f"Epoch: {epoch} | Loss: {loss} | Test loss: {test_loss}")
                 print(model_0.state_dict())
+    return epoch_count, loss_values, test_loss
+
+def model_saver(model):
+    torch.save(model.state_dict(), MODEL_SAVE_PATH)
 
 def model_loader():
+    torch.manual_seed(42)
+    
     try:
         # Load the saved model for evaluation
         model = LinearRegressionModel()
-        model.load_state_dict(torch.load('final_model.pt'))
+        model.load_state_dict(torch.load(MODEL_SAVE_PATH))
     except:
         model = LinearRegressionModel()
+    model.eval()
     return model
 
 if __name__ == '__main__':
-    torch.manual_seed(42)
     model = model_loader()
     # Setup a loss function
     loss_fn = nn.L1Loss()
@@ -184,12 +198,12 @@ if __name__ == '__main__':
     # Setup a optimizer
     optimizer = torch.optim.SGD(params = model.parameters(), lr = 0.01, momentum = 0.9)
 
-    train(100, loss_fn, optimizer, model)
+    ec, lv, tl = train(100, loss_fn, optimizer, model)
 
     with torch.inference_mode():
         y_preds_new = model(X_test)
     plot_prediction(predictions=y_preds_new)
-    torch.save(model.state_dict(), 'final_model.pt')
-
+    model_saver(model)
+    
     
 
