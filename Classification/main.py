@@ -24,4 +24,5 @@ plt.scatter(x = X[:, 0],
             y = X[:, 1],
             c = y, 
             cmap = plt.cm.RdYlBu)
+
 plt.show()
