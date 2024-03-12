@@ -1,3 +1,11 @@
+# To import some functions from another module
+import sys
+import os
+path = os.path.abspath("Helpers")
+sys.path.append(path)
+from helper_functions import plot_predictions, plot_decision_boundary
+
+
 import sklearn
 from sklearn.datasets import make_circles
 from sklearn.model_selection import train_test_split
@@ -5,6 +13,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import torch
 from torch import nn
+import requests
+from pathlib import Path 
+
 # Make classification data and get it ready
 # Make 1000 samples
 
@@ -145,6 +156,14 @@ for epoch in range(epochs):
         test_loss = loss_fn(test_logits, y_test)
         test_acc = accuracy_fn(y_test, test_pred)
 
-    if epoch % 10 == 0:
-        print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
-        
+    # if epoch % 10 == 0:
+    #     print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
+
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+plt.title("Train")
+plot_decision_boundary(model_0, X_train, y_train)
+plt.subplot(1, 2, 2)
+plt.title("Test")
+plot_decision_boundary(model_0, X_test, y_test)
+plt.show()
