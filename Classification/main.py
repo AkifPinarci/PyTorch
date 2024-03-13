@@ -177,3 +177,4 @@ def getRes():
 # 4. Cahnging the activation function
 # 5. Change the learning rate
 # 6. Change the loss function
+
