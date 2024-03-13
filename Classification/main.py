@@ -128,7 +128,7 @@ y_train.to(device)
 y_test.to(device)
 model_0.to(device)
 # Train the model
-epochs = 1000
+epochs = 100
 for epoch in range(epochs):
     model_0.train()
     # 1. Forward pass
@@ -159,11 +159,21 @@ for epoch in range(epochs):
     # if epoch % 10 == 0:
     #     print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
 
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
-plt.title("Train")
-plot_decision_boundary(model_0, X_train, y_train)
-plt.subplot(1, 2, 2)
-plt.title("Test")
-plot_decision_boundary(model_0, X_test, y_test)
-plt.show()
+def getRes():
+    plt.figure(figsize=(12, 6))
+    plt.subplot(1, 2, 1)
+    plt.title("Train")
+    plot_decision_boundary(model_0, X_train, y_train)
+    plt.subplot(1, 2, 2)
+    plt.title("Test")
+    plot_decision_boundary(model_0, X_test, y_test)
+    plt.show()
+# getRes()
+    
+# How to improve model
+1. Add more layers - give the model more chances to learn about patterns in the DeprecationWarning
+2. Add more hidden units - go from 5 hidden units to 10 hidden units
+3. Fit for longer
+4. Cahnging the activation function
+5. Change the learning rate
+6. Change the loss function
