@@ -171,9 +171,9 @@ def getRes():
 # getRes()
     
 # How to improve model
-1. Add more layers - give the model more chances to learn about patterns in the DeprecationWarning
-2. Add more hidden units - go from 5 hidden units to 10 hidden units
-3. Fit for longer
-4. Cahnging the activation function
-5. Change the learning rate
-6. Change the loss function
+# 1. Add more layers - give the model more chances to learn about patterns in the DeprecationWarning
+# 2. Add more hidden units - go from 5 hidden units to 10 hidden units
+# 3. Fit for longer
+# 4. Cahnging the activation function
+# 5. Change the learning rate
+# 6. Change the loss function
