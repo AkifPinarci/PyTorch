@@ -193,11 +193,11 @@ class CircleModelV1(nn.Module):
 model_1 = CircleModelV1().to(device)
 loss_fn1 = nn.BCEWithLogitsLoss()
 optimizer1 = torch.optim.SGD(params = model_1.parameters(), lr = 0.1)
-print(model_1.state_dict())
+# print(model_1.state_dict())
 
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
-epochs = 1000
+epochs = 0
 X_train.to(device)
 y_train.to(device)
 X_test.to(device)
@@ -232,4 +232,61 @@ for epoch in range(epochs):
     if epoch % 100 == 0:
        print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.2f}% | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
     
-getRes()
+# getRes()
+       
+# Create some data
+       
+weigth = 0.7
+bias = 0.3
+
+start = 0
+end = 1
+step = 0.01
+
+X_regression = torch.arange(start, end, step).unsqueeze(dim = 1)
+y_regression = X_regression * weigth + bias
+train_split = int(0.8 * len(X_regression))
+X_train_regression = X_regression[:train_split]
+y_train_regression = y_regression[:train_split]
+X_test_regression = X_regression[train_split:]
+y_test_regression = y_regression[train_split:]
+
+model_2 = nn.Sequential(
+    nn.Linear(in_features=1, out_features= 10),
+    nn.Linear(in_features=10, out_features= 10),
+    nn.Linear(in_features=10, out_features= 1),
+)
+
+loss_fn2 = nn.L1Loss()
+optimizer2 = torch.optim.SGD(model_2.parameters(), lr= 0.01)
+
+
+torch.manual_seed(42)
+
+epochs = 1000
+
+for epoch in range(epochs):
+    model_2.train()
+
+    y_pred = model_2(X_train_regression)
+    loss = loss_fn2(y_pred, y_train_regression)
+
+    optimizer2.zero_grad()
+    loss.backward()
+    optimizer2.step()
+
+    model_2.eval()
+    with torch.inference_mode():
+        test_pred = model_2(X_test_regression)
+        test_loss = loss_fn2(test_pred, y_test_regression)
+
+    if epoch % 100 == 0:
+       print(f"Epoch: {epoch} | Loss: {loss:.5f}| Test loss: {test_loss:.5f}")
+
+model_2.eval()
+with torch.inference_mode():
+    y_pred = model_2(X_test_regression)
+
+
+plot_predictions(X_train_regression, y_train_regression, X_test_regression, y_test_regression, y_pred)
+plt.show()
