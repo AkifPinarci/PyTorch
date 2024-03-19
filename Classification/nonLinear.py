@@ -15,7 +15,10 @@ import torch
 from torch import nn
 import requests
 from pathlib import Path 
-
+MODEL_PATH = Path("Model")
+MODEL_PATH.mkdir(parents = True, exist_ok = True)
+MODEL_NAME = "O2_pt_model_exercise.pth"
+MODEL_SAVE_PATH = MODEL_PATH / MODEL_NAME
 
 # Set device
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -104,7 +107,20 @@ model3.eval()
 with torch.inference_mode():
     y_preds = torch.round(torch.sigmoid(model3(X_test))).squeeze()
 
+def model_saver(model):
+    torch.save(model.state_dict(), MODEL_SAVE_PATH)
 
+def model_loader():
+    try:
+        torch.manual_seed(42)
+        # Load the saved model for evaluation
+        model = CircleModelV3()
+        model.load_state_dict(torch.load(MODEL_SAVE_PATH))
+    except:
+        torch.manual_seed(42)
+        model = CircleModelV3()
+    model.eval()
+    return model
 
 def getRes():
     plt.figure(figsize=(12, 6))
