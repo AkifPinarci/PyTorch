@@ -128,6 +128,7 @@ if __name__ == "__main__":
             test_acc = accuracy_fn(y_true=y_test,
                                     y_pred=test_pred)
 
+
         # Print out what's happening
             if epoch % 100 == 0:
                 print(f"Epoch: {epoch} | Loss: {loss:.5f}, Accuracy: {acc:.5f}% | Test Loss: {test_loss:.5f}, Test Accuracy: {test_acc:.5f}%")
