@@ -47,9 +47,7 @@ class BlobModel(nn.Module):
         super().__init__()
         self.linear_layer_stack = nn.Sequential(
             nn.Linear(input_features, hiddent_units),
-            nn.ReLU(),
             nn.Linear(hiddent_units, hiddent_units),
-            nn.ReLU(),
             nn.Linear(hiddent_units, output_features)
         )
     
