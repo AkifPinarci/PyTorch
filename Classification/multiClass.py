@@ -15,6 +15,7 @@ import torch
 from torch import nn
 import requests
 from pathlib import Path 
+from torchmetrics import Accuracy
 
 NUM_CLASSES = 4
 NUM_FEATURES = 2
@@ -85,7 +86,7 @@ def accuracy_fn(y_true, y_pred):
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
-epochs = 1000
+epochs = 100
 
 for epoch in range(epochs):
     model_4.train()
@@ -112,16 +113,20 @@ for epoch in range(epochs):
         print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc} | Test loss: {test_loss}, Test accuracy: {test_accuracy}")
 
 
-# model_4.eval()
-# with torch.inference_mode():
-#     y_logits = model_4(X_blob_test)
-#     y_pred = torch.softmax(y_logits, dim = 1).argmax(dim = 1)
+model_4.eval()
+with torch.inference_mode():
+    y_logits = model_4(X_blob_test)
+    y_pred = torch.softmax(y_logits, dim = 1).argmax(dim = 1)
 
-plt.figure(figsize = (12, 6))
-plt.subplot(1, 2, 1)
-plt.title("Train")
-plot_decision_boundary(model_4, X_blob_train, y_blob_train)
-plt.subplot(1, 2, 2)
-plt.title("Test")
-plot_decision_boundary(model_4, X_blob_test, y_blob_test)
-plt.show()
+# plt.figure(figsize = (12, 6))
+# plt.subplot(1, 2, 1)
+# plt.title("Train")
+# plot_decision_boundary(model_4, X_blob_train, y_blob_train)
+# plt.subplot(1, 2, 2)
+# plt.title("Test")
+# plot_decision_boundary(model_4, X_blob_test, y_blob_test)
+# plt.show()
+        
+tmAcc = Accuracy(task='multiclass', num_classes=NUM_CLASSES).to(device)
+res = tmAcc(y_pred, y_blob_test)
+print(res)
