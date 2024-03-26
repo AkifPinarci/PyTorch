@@ -58,7 +58,7 @@ class ExerciseModel(nn.Module):
     def forward(self, data):
        return self.layers.forward(data)
     
-model_1 = ExerciseModel(2, 4, 16).to(device)
+model_1 = ExerciseModel(2, 4, 2048).to(device)
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(params = model_1.parameters(), lr = 0.01)
