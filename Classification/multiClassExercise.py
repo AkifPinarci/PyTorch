@@ -58,7 +58,7 @@ class ExerciseModel(nn.Module):
     def forward(self, data):
        return self.layers.forward(data)
     
-model_1 = ExerciseModel(2, 4, 10).to(device)
+model_1 = ExerciseModel(2, 4, 16).to(device)
 
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(params = model_1.parameters(), lr = 0.01)
@@ -67,7 +67,7 @@ acc_fn = Accuracy(task = "multiclass", num_classes = 4).to(device)
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 
-epochs = 1000
+epochs = 200
 
 for epoch in range(epochs):
     model_1.train()  
@@ -83,8 +83,17 @@ for epoch in range(epochs):
     loss.backward()
     optimizer.step()
 
+    model_1.eval()
+    with torch.inference_mode():
+        test_logits = model_1(X_test)
+        test_pred = torch.softmax(test_logits, dim = 1).argmax(dim = 1)
+
+        test_loss = loss_fn(test_logits, test_pred)
+        test_accuracy = acc_fn(y_test, test_pred)
     if epoch % 10 == 0:
-        print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc}")
+        print(f"Epoch: {epoch}, Loss: {loss}, Accuracy: {acc} | Test loss: {test_loss}, Test accuracy: {test_accuracy}")
+
+
 
 
 
