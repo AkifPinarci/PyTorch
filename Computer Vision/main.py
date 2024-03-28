@@ -314,7 +314,12 @@ def test_step(model, dataloader, loss_fn, accuracy_fn, device):
         test_acc /= len(dataloader)
         print(f"Test loss: {test_loss:.5f} | Test accuracy: {test_acc:.2f}%\n")
 
-    
+def train_loop(epochs, model, train_dataloader, test_dataloader, optimizer, loss_fn, accuracy_fn, device):
+    for epoch in tqdm(range(epochs)):
+        print(f"Epoch: {epoch}")
+        train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device)
+        test_step(model, test_dataloader, loss_fn, accuracy_fn, device)
+
 torch.cuda.manual_seed(42) 
 torch.manual_seed(42)
 
@@ -322,26 +327,29 @@ model_0 = FashionMNISTModelV0(784, 10, len(train_data.classes)).to(device)
 torch.cuda.manual_seed(42)
 torch.manual_seed(42)   
 model_1 = FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device)
-
 loss_fn = nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(params=model_0.parameters(), lr = 0.1)
 
-# model_2 = FashionMNISTModelV2(1, 10, len(train_data.classes)).to(device)
+train_loop(
+    epochs = 3, 
+    model = model_0, 
+    train_dataloader = train_dataloader, 
+    test_dataloader = test_dataloader, 
+    optimizer = torch.optim.SGD(params=model_0.parameters(), lr = 0.1), 
+    loss_fn = loss_fn, 
+    accuracy_fn = accuracy_fn,  
+    device = device
+    )
 
-
-epochs = 3
-for epoch in tqdm(range(epochs)):
-    print(f"Epoch: {epoch}")
-    train_step(model_0, train_dataloader, loss_fn, optimizer, accuracy_fn, device)
-    test_step(model_0, test_dataloader, loss_fn, accuracy_fn, device)
-
-optimizer = torch.optim.SGD(params=model_1.parameters(), lr = 0.1)
-epochs = 3
-for epoch in tqdm(range(epochs)):
-    print(f"Epoch: {epoch}")
-    train_step(model_1, train_dataloader, loss_fn, optimizer, accuracy_fn, device)
-    test_step(model_1, test_dataloader, loss_fn, accuracy_fn, device)
-
+train_loop(
+    epochs = 3, 
+    model = model_1, 
+    train_dataloader = train_dataloader, 
+    test_dataloader = test_dataloader, 
+    optimizer = torch.optim.SGD(params=model_1.parameters(), lr = 0.1), 
+    loss_fn = loss_fn, 
+    accuracy_fn = accuracy_fn,  
+    device = device
+    )
 
 model_0_results = eval_model(model_0, test_dataloader, loss_fn, accuracy_fn, device)
 model_1_results = eval_model(model_1, test_dataloader, loss_fn, accuracy_fn, device)
