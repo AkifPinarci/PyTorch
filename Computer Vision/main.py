@@ -322,36 +322,48 @@ def train_loop(epochs, model, train_dataloader, test_dataloader, optimizer, loss
 
 torch.cuda.manual_seed(42) 
 torch.manual_seed(42)
-
 model_0 = FashionMNISTModelV0(784, 10, len(train_data.classes)).to(device)
+
 torch.cuda.manual_seed(42)
 torch.manual_seed(42)   
 model_1 = FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device)
 loss_fn = nn.CrossEntropyLoss()
 
-train_loop(
-    epochs = 3, 
-    model = model_0, 
-    train_dataloader = train_dataloader, 
-    test_dataloader = test_dataloader, 
-    optimizer = torch.optim.SGD(params=model_0.parameters(), lr = 0.1), 
-    loss_fn = loss_fn, 
-    accuracy_fn = accuracy_fn,  
-    device = device
-    )
+# train_loop(
+#     epochs = 3, 
+#     model = model_0, 
+#     train_dataloader = train_dataloader, 
+#     test_dataloader = test_dataloader, 
+#     optimizer = torch.optim.SGD(params=model_0.parameters(), lr = 0.1), 
+#     loss_fn = loss_fn, 
+#     accuracy_fn = accuracy_fn,  
+#     device = device
+#     )
 
-train_loop(
-    epochs = 3, 
-    model = model_1, 
-    train_dataloader = train_dataloader, 
-    test_dataloader = test_dataloader, 
-    optimizer = torch.optim.SGD(params=model_1.parameters(), lr = 0.1), 
-    loss_fn = loss_fn, 
-    accuracy_fn = accuracy_fn,  
-    device = device
-    )
+# train_loop(
+#     epochs = 3, 
+#     model = model_1, 
+#     train_dataloader = train_dataloader, 
+#     test_dataloader = test_dataloader, 
+#     optimizer = torch.optim.SGD(params=model_1.parameters(), lr = 0.1), 
+#     loss_fn = loss_fn, 
+#     accuracy_fn = accuracy_fn,  
+#     device = device
+#     )
 
-model_0_results = eval_model(model_0, test_dataloader, loss_fn, accuracy_fn, device)
-model_1_results = eval_model(model_1, test_dataloader, loss_fn, accuracy_fn, device)
-print(model_0_results)
-print(model_1_results)
+# model_0_results = eval_model(model_0, test_dataloader, loss_fn, accuracy_fn, device)
+# model_1_results = eval_model(model_1, test_dataloader, loss_fn, accuracy_fn, device)
+# print(model_0_results)
+# print(model_1_results)
+
+torch.manual_seed(42)
+
+images = torch.randn(size = (32, 3, 64, 64))
+test_image = images[0]
+
+conv_layer = nn.Conv2d(in_channels=3, out_channels=10, kernel_size=3, stride = 1, padding = 0)
+max_pool_laye = nn.MaxPool2d(in_channels=)
+res = conv_layer(test_image)
+print(test_image.shape)
+print(res.shape)
+# print(res)
