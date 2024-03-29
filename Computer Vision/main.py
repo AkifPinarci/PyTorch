@@ -16,23 +16,11 @@ import matplotlib.pyplot as plt
 from timeit import default_timer as timer
 from tqdm.auto import tqdm 
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-BATCH_SIZE = 32
-train_data = datasets.FashionMNIST(
-    root = "data", 
-    train = True,
-    download = True,
-    transform = ToTensor(),
-    target_transform = None
-)
+from pathlib import Path
+MODEL_PATH = Path("Model")
+MODEL_PATH.mkdir(parents = True, exist_ok = True)
 
-test_data = datasets.FashionMNIST(
-    root = "data", 
-    train = False,
-    download = True,
-    transform = ToTensor(),
-    target_transform = None
-)
+import pandas as pd
 
 # image, label = train_data[0]
 # print(image, label)
@@ -57,14 +45,6 @@ test_data = datasets.FashionMNIST(
 #     plt.imshow(img.squeeze(), cmap = "gray")
 #     plt.title(train_data.classes[label])
 #     plt.axis(False)
-
-train_dataloader = DataLoader(dataset = train_data,
-                               batch_size=BATCH_SIZE,
-                               shuffle=True)
-
-test_dataloader = DataLoader(dataset = test_data,
-                             batch_size= BATCH_SIZE,
-                             shuffle= False)
 
 # print(f"Lenth of the train dataloader: {len(train_dataloader)} batches of {BATCH_SIZE}")
 # print(f"Lenth of the test dataloader: {len(test_dataloader)} batches of {BATCH_SIZE}")
@@ -327,7 +307,7 @@ def train_loop(epochs, model, train_dataloader, test_dataloader, optimizer, loss
 # torch.cuda.manual_seed(42)
 # torch.manual_seed(42)   
 # model_1 = FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device)
-loss_fn = nn.CrossEntropyLoss()
+# loss_fn = nn.CrossEntropyLoss()
 
 # train_loop(
 #     epochs = 3, 
@@ -378,29 +358,111 @@ loss_fn = nn.CrossEntropyLoss()
 # # plt.imshow(res.squeeze(), cmap="gray")
 # # plt.show()
 
-torch.cuda.manual_seed(42)
-torch.manual_seed(42)
+# torch.cuda.manual_seed(42)
+# torch.manual_seed(42)
 
-model_2 = FashionMNISTModelV2(input_shape=1, hidden_units=10, output_shape = 10).to(device)
+# model_2 = FashionMNISTModelV2(input_shape=1, hidden_units=10, output_shape = 10).to(device)
 
-start_time_conv = timer()
-train_loop(
-    epochs = 3, 
-    model = model_2, 
-    train_dataloader = train_dataloader, 
-    test_dataloader = test_dataloader, 
-    optimizer = torch.optim.SGD(params=model_2.parameters(), lr = 0.1), 
-    loss_fn = loss_fn, 
-    accuracy_fn = accuracy_fn,  
-    device = device
+# start_time_conv = timer()
+# train_loop(
+#     epochs = 3, 
+#     model = model_2, 
+#     train_dataloader = train_dataloader, 
+#     test_dataloader = test_dataloader, 
+#     optimizer = torch.optim.SGD(params=model_2.parameters(), lr = 0.1), 
+#     loss_fn = loss_fn, 
+#     accuracy_fn = accuracy_fn,  
+#     device = device
+#     )
+# end_time_conv = timer()
+# print_train_time(start_time_conv, end_time_conv, device)
+
+# model_2_results = eval_model(
+#     model = model_2,
+#     data_loader = test_dataloader,
+#     loss_fn = loss_fn,
+#     accuracy_fn = accuracy_fn, 
+#     device = device 
+# )
+def model_saver(model, file_name):
+    MODEL_SAVE_PATH = MODEL_PATH / file_name
+    torch.save(model.state_dict(), MODEL_SAVE_PATH)
+
+def model_loader(model_class, file_name):
+    MODEL_SAVE_PATH = MODEL_PATH / file_name
+    try:
+        torch.manual_seed(42)
+        torch.cuda.manual_seed(42)
+        # Load the saved model for evaluation
+        model = model_class
+        model.load_state_dict(torch.load(MODEL_SAVE_PATH))
+    except:
+        torch.manual_seed(42)
+        torch.cuda.manual_seed(42)
+        model = model_class
+    model.eval()
+    return model
+
+if __name__ == "__main__":
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    BATCH_SIZE = 32
+    train_data = datasets.FashionMNIST(
+        root = "data", 
+        train = True,
+        download = True,
+        transform = ToTensor(),
+        target_transform = None
     )
-end_time_conv = timer()
-print_train_time(start_time_conv, end_time_conv, device)
 
-model_2_results = eval_model(
-    model = model_2,
-    data_loader = test_dataloader,
-    loss_fn = loss_fn,
-    accuracy_fn = accuracy_fn, 
-    device = device 
-)
+    test_data = datasets.FashionMNIST(
+    root = "data", 
+    train = False,
+    download = True,
+    transform = ToTensor(),
+    target_transform = None
+    )
+    train_dataloader = DataLoader(dataset = train_data,
+                               batch_size=BATCH_SIZE,
+                               shuffle=True)
+
+    test_dataloader = DataLoader(dataset = test_data,
+                                batch_size= BATCH_SIZE,
+                                shuffle= False)
+    loss_fn = nn.CrossEntropyLoss()
+
+    model_0 = model_loader(FashionMNISTModelV0(784, 10, len(train_data.classes)).to(device), "ComputerVision_Model_0")  
+    model_1 = model_loader(FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device), "ComputerVision_Model_1")
+    model_2 = model_loader(FashionMNISTModelV2(input_shape=1, hidden_units=10, output_shape = 10).to(device), "ComputerVision_Model_2")
+    ########################################################################################################################################################
+    # Code block that I can play with
+
+    model_0_results = eval_model(
+        model = model_0,
+        data_loader = test_dataloader,
+        loss_fn = loss_fn,
+        accuracy_fn = accuracy_fn, 
+        device = device 
+    )
+    model_1_results = eval_model(
+        model = model_1,
+        data_loader = test_dataloader,
+        loss_fn = loss_fn,
+        accuracy_fn = accuracy_fn, 
+        device = device 
+    )
+    model_2_results = eval_model(
+        model = model_2,
+        data_loader = test_dataloader,
+        loss_fn = loss_fn,
+        accuracy_fn = accuracy_fn, 
+        device = device 
+    )
+    print(model_0_results)
+    print(model_1_results)
+    print(model_2_results)
+
+    ########################################################################################################################################################
+    model_saver(model_0, "ComputerVision_Model_0")
+    model_saver(model_1, "ComputerVision_Model_1")
+    model_saver(model_2, "ComputerVision_Model_2")
+
