@@ -168,7 +168,6 @@ def print_train_time(start, end, device=torch.device):
 #                                            end=train_time_end_on_cpu,
 #                                            device=str(next(model_0.parameters()).device))
 
-
 def eval_model(model, data_loader, loss_fn, accuracy_fn, device):
     loss, acc = 0, 0
     model.eval()
@@ -263,15 +262,16 @@ class FashionMNISTModelV2(nn.Module):
 
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(in_features=hidden_units * 0, out_features=output_shape)
+            nn.Linear(in_features=hidden_units * 7 * 7, out_features=output_shape)
         )
 
     def forward(self, data):
         data = self.cnn_block_1(data)
-        print(data.shape)
+        # print(f"Data shape after CONV block 1: {data.shape}")
         data = self.cnn_block_2(data)
-        print(data.shape)
+        # print(f"Data shape after CONV block 2: {data.shape}")
         data = self.classifier(data)
+        # print(f"Data shape after classifier: {data.shape}")
         return data
 
 
@@ -316,17 +316,17 @@ def test_step(model, dataloader, loss_fn, accuracy_fn, device):
 
 def train_loop(epochs, model, train_dataloader, test_dataloader, optimizer, loss_fn, accuracy_fn, device):
     for epoch in tqdm(range(epochs)):
-        print(f"Epoch: {epoch}")
+        print(f"\nEpoch: {epoch}\n")
         train_step(model, train_dataloader, loss_fn, optimizer, accuracy_fn, device)
         test_step(model, test_dataloader, loss_fn, accuracy_fn, device)
 
-torch.cuda.manual_seed(42) 
-torch.manual_seed(42)
-model_0 = FashionMNISTModelV0(784, 10, len(train_data.classes)).to(device)
+# torch.cuda.manual_seed(42) 
+# torch.manual_seed(42)
+# model_0 = FashionMNISTModelV0(784, 10, len(train_data.classes)).to(device)
 
-torch.cuda.manual_seed(42)
-torch.manual_seed(42)   
-model_1 = FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device)
+# torch.cuda.manual_seed(42)
+# torch.manual_seed(42)   
+# model_1 = FashionMNISTModelV1(784, 10, len(train_data.classes)).to(device)
 loss_fn = nn.CrossEntropyLoss()
 
 # train_loop(
@@ -356,14 +356,51 @@ loss_fn = nn.CrossEntropyLoss()
 # print(model_0_results)
 # print(model_1_results)
 
+# torch.manual_seed(42)
+
+# images = torch.randn(size = (32, 1, 2, 2))
+# test_image = images[0]
+
+# conv_layer = nn.Conv2d(in_channels=3, out_channels=64, kernel_size=3, stride = 2, padding = 0)
+# max_pool_layer = nn.MaxPool2d(kernel_size = 2)
+# # res = conv_layer(test_image)
+# res = max_pool_layer(test_image)
+# # print(test_image.shape)
+# print(test_image)
+# print(res.shape)
+# print(res)
+# plt.imshow(test_image.squeeze(), cmap="gray")
+# plt.show()
+# image, label = train_data[0]
+# print(image.shape)
+# res = model_2(image.unsqueeze(dim = 1).to(device))
+# print(res)
+# # plt.imshow(res.squeeze(), cmap="gray")
+# # plt.show()
+
+torch.cuda.manual_seed(42)
 torch.manual_seed(42)
 
-images = torch.randn(size = (32, 3, 64, 64))
-test_image = images[0]
+model_2 = FashionMNISTModelV2(input_shape=1, hidden_units=10, output_shape = 10).to(device)
 
-conv_layer = nn.Conv2d(in_channels=3, out_channels=10, kernel_size=3, stride = 1, padding = 0)
-max_pool_laye = nn.MaxPool2d(in_channels=)
-res = conv_layer(test_image)
-print(test_image.shape)
-print(res.shape)
-# print(res)
+start_time_conv = timer()
+train_loop(
+    epochs = 3, 
+    model = model_2, 
+    train_dataloader = train_dataloader, 
+    test_dataloader = test_dataloader, 
+    optimizer = torch.optim.SGD(params=model_2.parameters(), lr = 0.1), 
+    loss_fn = loss_fn, 
+    accuracy_fn = accuracy_fn,  
+    device = device
+    )
+end_time_conv = timer()
+print_train_time(start_time_conv, end_time_conv, device)
+
+model_2_results = eval_model(
+    model = model_2,
+    data_loader = test_dataloader,
+    loss_fn = loss_fn,
+    accuracy_fn = accuracy_fn, 
+    device = device 
+)
