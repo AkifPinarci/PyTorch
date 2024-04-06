@@ -1,6 +1,6 @@
 {
   "python.analysis.extraPaths": ["./Helpers"],
-  "workbench.activityBar.location": "side",
+  "workbench.activityBar.location": "default",
   "workbench.colorTheme": "Default Dark Modern",
   "workbench.preferredHighContrastColorTheme": "Abyss",
   "editor.fontSize": 16
