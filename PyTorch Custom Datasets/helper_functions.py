@@ -110,6 +110,7 @@ def accuracy_fn(y_true, y_pred):
     return acc
 
 
+
 def print_train_time(start, end, device=None):
     """Prints difference between start and end time.
 
